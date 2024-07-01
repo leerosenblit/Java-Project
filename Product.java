@@ -15,7 +15,8 @@ public class Product {
         this.serialNumber = serialNumber++;
         this.category = getCategoryByIndex(category);
     }
-
+    wassup
+    tomer
     public Product(Product other){
         this.name = other.name;
         this.price = other.price;
