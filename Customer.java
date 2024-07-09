@@ -9,7 +9,8 @@ public class Customer {
     private Product[] cart;
     private int cartSize;
 
-    private String[][] history; //history of transactions, the first column for date and the second column is for the cart's toString
+    private Product[][] history; //history of carts
+    private String[] historyDates;
     private int numOfTransactions;
 
 
@@ -19,7 +20,8 @@ public class Customer {
         this.address = new Address(address);
         cart = new Product[2];
         cartSize = 0;
-        history = new String[1][2];
+        history = new Product[1][1];
+        historyDates = new String[1];
         numOfTransactions = 0;
     }
 
@@ -38,19 +40,30 @@ public class Customer {
         return sumCart;
     }
 
+
     public int getCartSize(){
         return cartSize;
     }
 
     public double pay(){
+        // Check if the history array needs to be increased
         if (numOfTransactions >= history.length) {
             history = increaseArray(history);
         }
+        if (numOfTransactions >= historyDates.length) {
+            historyDates = increaseArray(historyDates);
+        }
+        // Sum the cart
         double sumCart =sumCart();
 
-        history[numOfTransactions][0] = LocalDate.now().toString();
-        history[numOfTransactions][1] = Arrays.toString(cart);
+        // Record the transaction date
+        historyDates[numOfTransactions] = LocalDate.now().toString();
+        // Initialize the history entry for this transaction
+        history[numOfTransactions] = new Product[cart.length];
+        // Copy the current cart to the history
+        System.arraycopy(cart, 0, history[numOfTransactions], 0, cart.length);
         numOfTransactions++;
+        // Reset the cart
         cart = new Product[1];
         cartSize = 0;
 
@@ -62,7 +75,7 @@ public class Customer {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numOfTransactions; i++) {
             sb.append("\n");
-            sb.append((i + 1)).append(". Date: ").append(history[i][0]).append(", Products: ").append(history[i][1]);
+            sb.append((i + 1)).append(". Date: ").append(historyDates[i]).append(", Products: ").append(history[i][0]);
         }
         return sb.toString();
     }
@@ -88,6 +101,12 @@ public class Customer {
         return false;
     }
 
+    private String[] increaseArray(String[] historyDates) {
+        String[] newArray = new String[historyDates.length * 2];
+        System.arraycopy(historyDates, 0, newArray, 0, historyDates.length);
+        return newArray;
+    }
+
     private Product[] increaseArray(Product[] originalArray) {  // increase an array before adding into it
         int newLength = originalArray.length * 2;//multiply the size in two and return the new one.
         Product[] newArray = new Product[newLength];
@@ -95,13 +114,11 @@ public class Customer {
         return newArray;
     }
 
-    private String[][] increaseArray(String[][] originalArray) {  // increase an array before adding into it
-        int newLength = originalArray.length * 2;//multiply the size in two and return the new one.
-        String[][] newArray = new String[newLength][2];
-        System.arraycopy(originalArray, 0, newArray, 0, originalArray.length);
+     private Product[][] increaseArray(Product[][] original) {
+        Product[][] newArray = new Product[original.length * 2][];
+        System.arraycopy(original, 0, newArray, 0, original.length);
         return newArray;
     }
-
 
     public String getUsername() {
         return username;
@@ -119,5 +136,18 @@ public class Customer {
                 "address=" + address.toString() + '\n' +
                 "cart=" + cartString + '\n' +
                 "history=" + historyString;
+    }
+
+    public void setCartFromHistory(int i) {
+        int newLength = history[i].length;
+        cart = new Product[newLength];
+        System.arraycopy(history[i], 0, cart, 0, newLength);
+        cartSize = 0;
+        for (int j = 0; j < cart.length; j++) {
+            if(cart[j] == null) {
+                break;
+            }
+            cartSize++;
+        }
     }
 }

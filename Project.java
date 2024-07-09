@@ -68,6 +68,9 @@ public class Project {
                 case 8:
                     case8(m);
                     break;
+                case 9:
+                    case9(m);
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -85,6 +88,8 @@ public class Project {
         System.out.println("6 - Display All customers");
         System.out.println("7 - Display All Sellers");
         System.out.println("8 - Display All product from a category");
+        System.out.println("9 - Create New cart from History");
+
     }
 
     private static void case1(Manager m){ // Add seller
@@ -213,11 +218,40 @@ public class Project {
             System.out.println("No sellers at the moment.");
         }
     }
+
     private static void case8(Manager m){
         System.out.print(Product.categoryToString());
         System.out.print("Enter category number :");
         int categoryNumber = sc.nextInt();
         m.displayProductsByCategory(categoryNumber);
+    }
+
+    private  static  void case9(Manager m){
+        System.out.print("Enter customer name: ");
+        String customerName = sc.nextLine();
+
+        if (!m.checkIfExistCustomers(customerName)) {
+            System.out.println("No customer with the name " + customerName + ".");
+            return;
+        }
+        if (m.getNumOfTransactions(customerName) > 0){
+            if(m.getNumOfProducts(customerName) > 0){
+                System.out.println("You already have items in cart, do you wish to replace? yes/no");
+                boolean wish = sc.nextLine().equals("yes");
+                if(!wish){
+                    return;
+                }
+            }
+            System.out.println(m.getSpecificCustomer(customerName));
+            System.out.println("Please choose the desired cart:");
+            int choice = sc.nextInt();
+            m.setCartFromHistory(customerName,choice - 1);
+        }
+        else {
+            System.out.println("No order history for " + customerName);
+        }
+//        customer.createNewCartFromHistory();
+        System.out.println("New cart created from history for customer " + customerName);
     }
 }
 

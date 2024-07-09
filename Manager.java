@@ -1,3 +1,6 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class Manager {
 
     private Seller[] sellers;
@@ -77,6 +80,16 @@ public class Manager {
         return true;
     }
 
+    public String getSpecificCustomer(String customerName){
+        int customerIndex = returnIndexCustomers(customerName);
+        return customers[customerIndex].getOrderHistory();
+    }
+
+    public int getNumOfTransactions(String customerName){
+        int customerIndex = returnIndexCustomers(customerName);
+        return customers[returnIndexCustomers(customerName)].getNumOfTransactions();
+    }
+
     public boolean checkIfNeedPack(String customerName){
         int customerIndex = returnIndexCustomers(customerName);
         if(customers[customerIndex].checkIfNeedPack()){
@@ -87,10 +100,14 @@ public class Manager {
 
     public String getAllSellers(){
         StringBuilder sb = new StringBuilder();
+        Seller[] sortedSellers = Arrays.copyOf(sellers, numOfSellers);
+
+        Arrays.sort(sortedSellers, Comparator.comparingInt(Seller::getNumOfProducts).reversed());
+
         if(numOfSellers > 0) {
             for(int i = 0; i < numOfSellers; i++) {
                 sb.append(i + 1).append(": ");
-                sb.append(sellers[i].toString());
+                sb.append(sortedSellers[i].toString());
                 sb.append("\n");
             }
             return sb.toString();
@@ -146,7 +163,7 @@ public class Manager {
     }
 
 
-    private boolean checkIfExistSellers(String choice) { // To check if a seller already exists
+    public boolean checkIfExistSellers(String choice) { // To check if a seller already exists
         if(numOfSellers == 0) {
             return false;
         }
@@ -158,7 +175,7 @@ public class Manager {
         return false;
     }
 
-    private boolean checkIfExistCustomers(String choice) { // To check if a customer already exists
+    public boolean checkIfExistCustomers(String choice) { // To check if a customer already exists
         if(numOfCustomers == 0) {
             return false;
         }
@@ -199,5 +216,10 @@ public class Manager {
             System.out.println("No products found in this category. ");
 
         }
+    }
+
+    public void setCartFromHistory(String customerName, int i) {
+        int customerIndex = returnIndexCustomers(customerName);
+        customers[customerIndex].setCartFromHistory(i);
     }
 }
