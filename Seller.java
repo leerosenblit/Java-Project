@@ -29,6 +29,32 @@ public class Seller {
         return true;
     }
 
+    public boolean addProduct(String name, double price, int category, double packingPrice)
+    {
+        if (checkIfExist(name, products)){
+            return false;
+        }
+        if (category > 3){
+            return false;
+        }
+        if (numOfProducts >= products.length) {
+            products = increaseArray(products);
+        }
+
+        products[numOfProducts++] = new PackagedProduct(name, price, category, packingPrice);
+        return true;
+    }
+
+    public String getProductsByCategory(int category){
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < numOfProducts; i++){
+            if(products[i].getCategoryIndex() == (category - 1)){
+                sb.append(products[i].toString()).append("  ");
+            }
+        }
+        return sb.toString();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -41,6 +67,10 @@ public class Seller {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numOfProducts; i++) {
             sb.append((i + 1)).append(". ").append(products[i].getName()).append("(").append(products[i].getPrice()).append("$)");
+            if(products[i] instanceof PackagedProduct){
+                sb.append(", Including additional packing fee of ").append(((PackagedProduct) products[i]).getPackPrice());
+                sb.append("$");
+            }
             sb.append("\n");
         }
         return sb.toString();
@@ -78,26 +108,11 @@ public class Seller {
         return false;
     }
 
-    public String productsToString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        for (Product product : products) {
-            if (product != null) {
-                if (sb.length() > 1) {
-                    sb.append(", ");
-                }
-                sb.append(product.toString());
-            }
-        }
-        sb.append("]");
-        return sb.toString();
-    }
-
     @Override
     public String toString() {
-        String productsString = numOfProducts>0 ? productsToString() : "No products at the moment";
+        String productsString = numOfProducts>0 ? getProducts() : "No products at the moment";
         return "username=" + username + '\n' +
-                "products=" + productsString +
+                "products=\n" + productsString +
                 '\n' +
                 "numOfProducts=" + numOfProducts;
     }

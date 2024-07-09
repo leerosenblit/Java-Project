@@ -21,17 +21,17 @@ public class Project {
         m.addCustomer("Mary", "mary", address);
         m.addCustomer("John", "john", address);
 
-        m.addProductToSeller("Lee", "Iphone", 1000, 3);
-        m.addProductToSeller("Lee", "Bin", 100, 1);
-        m.addProductToSeller("Lee", "PS4", 350, 2);
+        m.addProductToSeller("Lee", "Iphone", 1000, 3,0);
+        m.addProductToSeller("Lee", "Bin", 100, 1,5);
+        m.addProductToSeller("Lee", "PS4", 350, 2,3);
 
-        m.addProductToSeller("John", "Glass", 10, 2);
-        m.addProductToSeller("John", "Sink", 100, 1);
-        m.addProductToSeller("John", "PC", 800, 1);
+        m.addProductToSeller("John", "Glass", 10, 2,0);
+        m.addProductToSeller("John", "Sink", 100, 1, 6);
+        m.addProductToSeller("John", "PC", 800, 1, 8);
 
-        m.addProductToSeller("John", "Snack", 3, 2);
-        m.addProductToSeller("John", "Burger", 10, 2);
-        m.addProductToSeller("John", "Silver", 100, 1);
+        m.addProductToSeller("John", "Snack", 3, 2,1);
+        m.addProductToSeller("John", "Burger", 10, 2,0);
+        m.addProductToSeller("John", "Silver", 100, 1,9);
 
 
 
@@ -65,6 +65,9 @@ public class Project {
                 case 7:
                     case7(m);
                     break;
+                case 8:
+                    case8(m);
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -81,6 +84,7 @@ public class Project {
         System.out.println("5 - Payment of Order for customer");
         System.out.println("6 - Display All customers");
         System.out.println("7 - Display All Sellers");
+        System.out.println("8 - Display All product from a category");
     }
 
     private static void case1(Manager m){ // Add seller
@@ -129,8 +133,15 @@ public class Project {
         System.out.print(m.getCategories());
         System.out.print("Enter the category number: ");
         int category = sc.nextInt();
-
-        if (m.addProductToSeller(seller,productName, price, category)) {
+        System.out.print("Is the product need to be packed? ");
+        sc.nextLine();
+        String answer = sc.nextLine();
+        double packingPrice = 0;
+        if(answer.equals("yes") || answer.equals("Yes")){
+            System.out.print("Enter the packing price: ");
+            packingPrice = Double.parseDouble(sc.nextLine());
+        }
+        if (m.addProductToSeller(seller,productName, price, category, packingPrice)) {
             System.out.println("Product added successfully.");
         }
         else {
@@ -143,7 +154,7 @@ public class Project {
         String customer = sc.nextLine();
         System.out.print("Enter seller name: ");
         String seller = sc.nextLine();
-        if (m.addProductToCustomer(customer, seller)) {
+        if (m.IsCustomerExists(customer, seller)) {
             System.out.println("Choose your desired product(enter the name of the product): ");
             String productList = m.getSellerProducts(seller);
             System.out.println(productList);
@@ -162,11 +173,16 @@ public class Project {
         System.out.print("Enter customer name: ");
         String customer = sc.nextLine();
         if(m.getNumOfProducts(customer) > 0){
+            if(m.checkIfNeedPack(customer)){
+                    System.out.println("Packing...");
+                }
             double totalPayment = m.customerPay(customer);
-            if(totalPayment != -1)
+            if(totalPayment != -1) {
                 System.out.println("You paid: " + totalPayment);
-            else
+            }
+            else {
                 System.out.println("Invalid");
+            }
         }
         else if(m.getNumOfProducts(customer) == 0){
             System.out.println("No products in cart.");
@@ -196,6 +212,12 @@ public class Project {
         else{
             System.out.println("No sellers at the moment.");
         }
+    }
+    private static void case8(Manager m){
+        System.out.print(Product.categoryToString());
+        System.out.print("Enter category number :");
+        int categoryNumber = sc.nextInt();
+        m.displayProductsByCategory(categoryNumber);
     }
 }
 

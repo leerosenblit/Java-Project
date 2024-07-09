@@ -79,6 +79,15 @@ public class Customer {
         return numOfTransactions;
     }
 
+    public boolean checkIfNeedPack(){
+        for(int i = 0; i < cartSize; i++){
+            if(cart[i] instanceof PackagedProduct){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Product[] increaseArray(Product[] originalArray) {  // increase an array before adding into it
         int newLength = originalArray.length * 2;//multiply the size in two and return the new one.
         Product[] newArray = new Product[newLength];
@@ -104,7 +113,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        String cartString = cartSize > 0 ? Arrays.toString(cart) : "No items in cart.";
+        String cartString = cartSize > 0 ? getCart() : "No items in cart.";
         String historyString = numOfTransactions > 0 ? getOrderHistory() : "No history of transactions.";
         return "username=" + username + '\n' +
                 "address=" + address.toString() + '\n' +

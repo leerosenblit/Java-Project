@@ -43,18 +43,23 @@ public class Manager {
         return -1;
     }
 
-    public boolean addProductToSeller(String sellerName, String productName, double price, int category){
+    public boolean addProductToSeller(String sellerName, String productName, double price, int category, double packingPrice){
         if(returnIndexSellers(sellerName) == -1){
             return false;
         }
         else{
-            sellers[returnIndexSellers(sellerName)].addProduct(productName, price, category);
+            if(packingPrice!=0){
+                sellers[returnIndexSellers(sellerName)].addProduct(productName, price, category,packingPrice);
+            }
+            else{
+                sellers[returnIndexSellers(sellerName)].addProduct(productName, price, category);
+            }
             return true;
         }
     }
 
 
-    public boolean addProductToCustomer(String customerName, String sellerName){
+    public boolean IsCustomerExists(String customerName, String sellerName){
         return checkIfExistCustomers(customerName) && checkIfExistSellers(sellerName);
     }
 
@@ -62,9 +67,22 @@ public class Manager {
     public boolean addProductToCustomer(String customerName, String sellerName, String productName){
         int customerIndex = returnIndexCustomers(customerName);
         int sellerIndex = returnIndexSellers(sellerName);
+        if (sellers[sellerIndex].getProductByName(productName) instanceof PackagedProduct){
+            PackagedProduct p = new PackagedProduct((PackagedProduct) sellers[sellerIndex].getProductByName(productName));
+            customers[customerIndex].addProduct(p);
+            return true;
+        }
         Product p = new Product(sellers[sellerIndex].getProductByName(productName));
         customers[customerIndex].addProduct(p);
         return true;
+    }
+
+    public boolean checkIfNeedPack(String customerName){
+        int customerIndex = returnIndexCustomers(customerName);
+        if(customers[customerIndex].checkIfNeedPack()){
+            return true;
+        }
+        return false;
     }
 
     public String getAllSellers(){
@@ -166,5 +184,20 @@ public class Manager {
                 return i;
         }
         return -1;
+    }
+    public void displayProductsByCategory(int category) {
+        boolean found = false;
+        for (int i = 0; i < numOfSellers; i++) {
+            String products = sellers[i].getProductsByCategory(category);
+            if (products != null && !products.isEmpty()) {
+                found = true;
+                System.out.println("seller: " + sellers[i].getUsername());
+                System.out.println(products);
+            }
+        }
+        if (!found) {
+            System.out.println("No products found in this category. ");
+
+        }
     }
 }
