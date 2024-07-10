@@ -7,8 +7,6 @@ public class Project {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        int choice;  // The choice from the menu
-
         Manager m = new Manager();
 
         m.addSeller("Lee", "lee");
@@ -34,46 +32,50 @@ public class Project {
         m.addProductToSeller("John", "Silver", 100, 1,9);
 
 
-
+        int choice;  // The choice from the menu
         while (true) {
             menu();
+                try {
+                    choice = sc.nextInt();
+                    sc.nextLine();
 
-            choice = sc.nextInt();
-            sc.nextLine();
-
-            switch (choice) {
-                case 0:
-                    System.exit(0);
-                case 1:
-                    case1(m);
-                    break;
-                case 2:
-                    case2(m);
-                    break;
-                case 3:
-                    case3(m);
-                    break;
-                case 4:
-                    case4(m);
-                    break;
-                case 5:
-                    case5(m);
-                    break;
-                case 6:
-                    case6(m);
-                    break;
-                case 7:
-                    case7(m);
-                    break;
-                case 8:
-                    case8(m);
-                    break;
-                case 9:
-                    case9(m);
-                    break;
-                default:
+                    switch (choice) {
+                        case 0:
+                            System.exit(0);
+                        case 1:
+                            case1(m);
+                            break;
+                        case 2:
+                            case2(m);
+                            break;
+                        case 3:
+                            case3(m);
+                            break;
+                        case 4:
+                            case4(m);
+                            break;
+                        case 5:
+                            case5(m);
+                            break;
+                        case 6:
+                            case6(m);
+                            break;
+                        case 7:
+                            case7(m);
+                            break;
+                        case 8:
+                            case8(m);
+                            break;
+                        case 9:
+                            case9(m);
+                            break;
+                        default:
+                            System.out.println("Invalid choice. Please try again.");
+                    }
+                } catch (Exception e) {
                     System.out.println("Invalid choice. Please try again.");
-            }
+                    sc.nextLine();
+                }
         }
     }
 
@@ -133,19 +135,59 @@ public class Project {
         String seller = sc.nextLine();
         System.out.print("Enter product name: ");
         String productName = sc.nextLine();
-        System.out.print("Enter the price: ");
-        double price = Double.parseDouble(sc.nextLine());
-        System.out.print(m.getCategories());
-        System.out.print("Enter the category number: ");
-        int category = sc.nextInt();
-        System.out.print("Is the product need to be packed? ");
-        sc.nextLine();
-        String answer = sc.nextLine();
-        double packingPrice = 0;
-        if(answer.equals("yes") || answer.equals("Yes")){
-            System.out.print("Enter the packing price: ");
-            packingPrice = Double.parseDouble(sc.nextLine());
+
+        double price = 0;
+        boolean validPrice = false;
+        while(!validPrice){
+            System.out.print("Enter the price: ");
+            try {
+                price = Double.parseDouble(sc.nextLine());
+                validPrice = true;
+            }catch (NumberFormatException e){
+                System.out.println("Invalid price. Please try again.");
+            }
         }
+
+        System.out.print(m.getCategories());
+        int category = 0;
+        boolean validCategory = false;
+        while(!validCategory){
+            System.out.print("Enter the category: ");
+            try {
+                category = Integer.parseInt(sc.nextLine());
+                if(category > 0 && category < 5){
+                    validCategory = true;
+                } else {
+                    System.out.println("Invalid category. Please enter a number between 0 and 3.");
+                }
+
+
+            }catch (NumberFormatException e){
+                System.out.println("Invalid category. Please enter a valid number.");
+            }
+        }
+
+        System.out.print("Is the product needs to be packed? ");
+        String answer = sc.nextLine().toLowerCase();
+        while (!answer.equals("yes") && !answer.equals("no")){
+            System.out.print("Invalid input. Please enter 'yes' or 'no': ");
+            answer = sc.nextLine().toLowerCase();
+        }
+
+        double packingPrice = 0;
+        if (answer.equals("yes")) {
+            boolean validPackingPrice = false;
+            while(!validPackingPrice){
+                System.out.print("Enter the packing price: ");
+                try {
+                    packingPrice = Double.parseDouble(sc.nextLine());
+                    validPackingPrice = true;
+                } catch (NumberFormatException e){
+                    System.out.println("Invalid input. please enter a valid number for the packing price");
+                }
+            }
+        }
+
         if (m.addProductToSeller(seller,productName, price, category, packingPrice)) {
             System.out.println("Product added successfully.");
         }
@@ -174,26 +216,27 @@ public class Project {
         }
     }
 
-    private static void case5(Manager m){ // Pay for customer
-        System.out.print("Enter customer name: ");
-        String customer = sc.nextLine();
-        if(m.getNumOfProducts(customer) > 0){
-            if(m.checkIfNeedPack(customer)){
+    private static void case5(Manager m) { // Pay for customer
+        try {
+            System.out.print("Enter customer name: ");
+            String customer = sc.nextLine();
+            if (m.getNumOfProducts(customer) > 0) {
+                if (m.checkIfNeedPack(customer)) {
                     System.out.println("Packing...");
                 }
-            double totalPayment = m.customerPay(customer);
-            if(totalPayment != -1) {
-                System.out.println("You paid: " + totalPayment);
+                double totalPayment = m.customerPay(customer);
+                if (totalPayment != -1) {
+                    System.out.println("You paid: " + totalPayment);
+                } else {
+                    System.out.println("Invalid");
+                }
+            } else if (m.getNumOfProducts(customer) == 0) {
+                throw new EmptycartException();
+            } else {
+                System.out.println("No customer with the name " + customer + ".");
             }
-            else {
-                System.out.println("Invalid");
-            }
-        }
-        else if(m.getNumOfProducts(customer) == 0){
-            System.out.println("No products in cart.");
-        }
-        else{
-            System.out.println("No customer with the name " + customer + ".");
+        } catch (EmptycartException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -221,10 +264,23 @@ public class Project {
 
     private static void case8(Manager m){
         System.out.print(Product.categoryToString());
-        System.out.print("Enter category number :");
-        int categoryNumber = sc.nextInt();
-        m.displayProductsByCategory(categoryNumber);
+        boolean validCategory = false;
+        while (!validCategory) {
+            System.out.print("Enter the category: ");
+            try {
+                int category = Integer.parseInt(sc.nextLine());
+                if (category > 0 && category < 5) {
+                    validCategory = true;
+                    m.displayProductsByCategory(category);
+                } else {
+                    System.out.println("Invalid category. Please enter a number between 0 and 3.");
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
     }
+}
+
 
     private  static  void case9(Manager m){
         System.out.print("Enter customer name: ");
@@ -234,24 +290,32 @@ public class Project {
             System.out.println("No customer with the name " + customerName + ".");
             return;
         }
-        if (m.getNumOfTransactions(customerName) > 0){
-            if(m.getNumOfProducts(customerName) > 0){
+        if (m.getNumOfTransactions(customerName) > 0) {
+            if (m.getNumOfProducts(customerName) > 0) {
                 System.out.println("You already have items in cart, do you wish to replace? yes/no");
-                boolean wish = sc.nextLine().equals("yes");
-                if(!wish){
-                    return;
+                String answer = sc.nextLine().toLowerCase();
+                while (!answer.equals("yes") && !answer.equals("no")) {
+                    System.out.print("Invalid input. Please enter 'yes' or 'no': ");
+                    answer = sc.nextLine().toLowerCase();
                 }
             }
             System.out.println(m.getSpecificCustomer(customerName));
-            System.out.println("Please choose the desired cart:");
-            int choice = sc.nextInt();
-            m.setCartFromHistory(customerName,choice - 1);
+            boolean validCategory = false;
+            while (!validCategory) {
+                System.out.println("Please choose the desired cart:");
+                try {
+                    int choice = sc.nextInt();
+                    m.setCartFromHistory(customerName, choice - 1);
+                    validCategory = true;
+                } catch (Exception e) {
+                    System.out.println("Invalid input. Please enter a valid number.");
+                }
+            }
+            System.out.println("New cart created from history for customer " + customerName);
         }
         else {
             System.out.println("No order history for " + customerName);
         }
-//        customer.createNewCartFromHistory();
-        System.out.println("New cart created from history for customer " + customerName);
     }
 }
 

@@ -1,7 +1,7 @@
 import java.time.LocalDate;
 import java.util.Arrays;
 
-public class Customer {
+public class Customer implements Comparable<Customer> {
     private String username;
     private String password;
     private Address address;
@@ -149,5 +149,10 @@ public class Customer {
             }
             cartSize++;
         }
+    }
+
+    @Override
+    public int compareTo(Customer c){
+        return this.username.compareTo(c.username);
     }
 }

@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class Manager {
+public class Manager{
 
     private Seller[] sellers;
     private int numOfSellers;
@@ -98,16 +98,17 @@ public class Manager {
         return false;
     }
 
+
     public String getAllSellers(){
         StringBuilder sb = new StringBuilder();
-        Seller[] sortedSellers = Arrays.copyOf(sellers, numOfSellers);
-
-        Arrays.sort(sortedSellers, Comparator.comparingInt(Seller::getNumOfProducts).reversed());
+        Seller[] newSellers = new Seller[numOfSellers];
+        System.arraycopy(sellers, 0, newSellers, 0, numOfSellers);
+        Arrays.sort(newSellers);
 
         if(numOfSellers > 0) {
             for(int i = 0; i < numOfSellers; i++) {
                 sb.append(i + 1).append(": ");
-                sb.append(sortedSellers[i].toString());
+                sb.append(newSellers[i].toString());
                 sb.append("\n");
             }
             return sb.toString();
@@ -117,10 +118,15 @@ public class Manager {
 
     public String getAllCustomers(){
         StringBuilder sb = new StringBuilder();
+        Customer[] newCustomers = new Customer[numOfCustomers];
+        System.arraycopy(customers, 0, newCustomers, 0, numOfCustomers);
+
+        Arrays.sort(newCustomers);
+
         if(numOfCustomers > 0) {
             for(int i = 0; i < numOfCustomers; i++) {
                 sb.append(i + 1).append(": ");
-                sb.append(customers[i].toString());
+                sb.append(newCustomers[i].toString());
                 sb.append("\n");
             }
             return sb.toString();

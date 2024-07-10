@@ -1,6 +1,7 @@
 import java.util.Arrays;
+import java.util.Comparator;
 
-public class Seller {
+public class Seller implements Comparable<Seller>{
     private String username;
     private String password;
     private Product[] products;
@@ -109,6 +110,11 @@ public class Seller {
     }
 
     @Override
+    public int compareTo(Seller s){
+        return this.username.compareTo(s.username);
+    }
+
+    @Override
     public String toString() {
         String productsString = numOfProducts>0 ? getProducts() : "No products at the moment";
         return "username=" + username + '\n' +
@@ -117,4 +123,6 @@ public class Seller {
                 "numOfProducts=" + numOfProducts;
     }
 }
+
+
 
