@@ -35,6 +35,10 @@ public class Product {
         return serialNumber;
     }
 
+    public String getCategory(){
+        return category.name();
+    }
+
     // Getter for product price.
     public double getPrice(){
         return price;

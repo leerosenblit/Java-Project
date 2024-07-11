@@ -149,7 +149,7 @@ public class Project {
                     validPrice = true;
                 }
                 else{
-                    System.out.println("Price can't be a negative number. Please try again");
+                    System.out.println("Price can't be a negative number or zero. Please try again");
                 }
             }catch (NumberFormatException e){
                 System.out.println("Invalid price. Please try again.");
@@ -202,7 +202,7 @@ public class Project {
             }
         }
 
-        if (m.addProductToSeller(seller,productName, price, category, packingPrice)) {
+        if (m.addProductToSeller(seller,productName, price, category - 1, packingPrice)) {
             System.out.println("Product added successfully.");
         }
         else {
@@ -324,7 +324,7 @@ public class Project {
                 System.out.println("Please choose the desired cart:");
                 try {
                     int choice = sc.nextInt();
-                    if(choice >0 && choice < m.getNumOfProducts(customerName)) {
+                    if(choice >0 && choice <= m.getNumOfTransactions(customerName)) {
                         m.setCartFromHistory(customerName, choice - 1);
                         validCategory = true;
                     }

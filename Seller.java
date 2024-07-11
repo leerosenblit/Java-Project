@@ -64,7 +64,8 @@ public class Seller implements Comparable<Seller>{
     public String getProducts() { // return the products of the seller
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numOfProducts; i++) {
-            sb.append((i + 1)).append(". ").append(products[i].getName()).append("(").append(products[i].getPrice()).append("$)");
+            sb.append((i + 1)).append(". ").append(products[i].getName()).append(", Category:").append(products[i].getCategory());
+            sb.append("  (").append(products[i].getPrice()).append("$)");
             if(products[i] instanceof PackagedProduct){
                 sb.append(", Including additional packing fee of ").append(((PackagedProduct) products[i]).getPackPrice());
                 sb.append("$");
@@ -96,7 +97,7 @@ public class Seller implements Comparable<Seller>{
             return false;
         }
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] != null)
+            if (arr[i] == null)
             {
                 return false;
             }
@@ -115,7 +116,7 @@ public class Seller implements Comparable<Seller>{
 
     @Override
     public String toString() {
-        String productsString = numOfProducts>0 ? getProducts() : "No products at the moment";
+        String productsString = numOfProducts>0 ? getProducts() : "No products at the moment.\n";
         return "username=" + username + '\n' +
                 "products=\n" + productsString +
                 "numOfProducts=" + numOfProducts +
