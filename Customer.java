@@ -1,18 +1,16 @@
 import java.time.LocalDate;
-import java.util.Arrays;
 
 public class Customer implements Comparable<Customer> {
-    private String username;
-    private String password;
-    private Address address;
+    private String username; // Customer's username
+    private String password; // Customer's password
+    private Address address; // Customer's address
 
-    private Product[] cart;
-    private int cartSize;
+    private Product[] cart; // Current cart of products
+    private int cartSize; // Number of items in the cart
 
-    private Product[][] history; //history of carts
-    private String[] historyDates;
-    private int numOfTransactions;
-
+    private Product[][] history; // History of carts (transactions)
+    private String[] historyDates; // Dates of transactions
+    private int numOfTransactions; // Number of transactions
 
     public Customer(String username, String password, Address address) {
         this.username = username;
@@ -25,27 +23,30 @@ public class Customer implements Comparable<Customer> {
         numOfTransactions = 0;
     }
 
-    public void addProduct(Product p){
-        if(cartSize >= cart.length) {
+    // Adds a product to the cart
+    public void addProduct(Product p) {
+        if (cartSize >= cart.length) {
             cart = increaseArray(cart);
         }
         cart[cartSize++] = p;
     }
 
-    private double sumCart(){ // sums the cart's price
+    // Sums the total price of the products in the cart
+    private double sumCart() {
         double sumCart = 0;
-        for (int i=0;i<cartSize;i++){
+        for (int i = 0; i < cartSize; i++) {
             sumCart += cart[i].getPrice();
         }
         return sumCart;
     }
 
-
-    public int getCartSize(){
+    // Returns the number of items in the cart
+    public int getCartSize() {
         return cartSize;
     }
 
-    public double pay(){
+    // Processes the payment for the current cart and records the transaction
+    public double pay() {
         // Check if the history array needs to be increased
         if (numOfTransactions >= history.length) {
             history = increaseArray(history);
@@ -53,24 +54,28 @@ public class Customer implements Comparable<Customer> {
         if (numOfTransactions >= historyDates.length) {
             historyDates = increaseArray(historyDates);
         }
+
         // Sum the cart
-        double sumCart =sumCart();
+        double sumCart = sumCart();
 
         // Record the transaction date
         historyDates[numOfTransactions] = LocalDate.now().toString();
+
         // Initialize the history entry for this transaction
         history[numOfTransactions] = new Product[cart.length];
+
         // Copy the current cart to the history
         System.arraycopy(cart, 0, history[numOfTransactions], 0, cart.length);
         numOfTransactions++;
+
         // Reset the cart
-        cart = new Product[1];
+        cart = new Product[2];
         cartSize = 0;
 
         return sumCart;
     }
 
-
+    // Returns the order history as a formatted string
     public String getOrderHistory() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numOfTransactions; i++) {
@@ -80,7 +85,8 @@ public class Customer implements Comparable<Customer> {
         return sb.toString();
     }
 
-    public String getCart(){
+    // Returns the current cart as a formatted string
+    public String getCart() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < cartSize; i++) {
             sb.append((i + 1)).append(": ").append(cart[i]);
@@ -88,43 +94,50 @@ public class Customer implements Comparable<Customer> {
         return sb.toString();
     }
 
-    public int getNumOfTransactions(){
+    // Returns the number of transactions
+    public int getNumOfTransactions() {
         return numOfTransactions;
     }
 
-    public boolean checkIfNeedPack(){
-        for(int i = 0; i < cartSize; i++){
-            if(cart[i] instanceof PackagedProduct){
+    // Checks if the cart contains any packaged products
+    public boolean checkIfNeedPack() {
+        for (int i = 0; i < cartSize; i++) {
+            if (cart[i] instanceof PackagedProduct) {
                 return true;
             }
         }
         return false;
     }
 
+    // Increases the size of a String array
     private String[] increaseArray(String[] historyDates) {
         String[] newArray = new String[historyDates.length * 2];
         System.arraycopy(historyDates, 0, newArray, 0, historyDates.length);
         return newArray;
     }
 
-    private Product[] increaseArray(Product[] originalArray) {  // increase an array before adding into it
-        int newLength = originalArray.length * 2;//multiply the size in two and return the new one.
+    // Increases the size of a Product array
+    private Product[] increaseArray(Product[] originalArray) {
+        int newLength = originalArray.length * 2;
         Product[] newArray = new Product[newLength];
         System.arraycopy(originalArray, 0, newArray, 0, originalArray.length);
         return newArray;
     }
 
-     private Product[][] increaseArray(Product[][] original) {
+    // Increases the size of a Product 2D array
+    private Product[][] increaseArray(Product[][] original) {
         Product[][] newArray = new Product[original.length * 2][];
         System.arraycopy(original, 0, newArray, 0, original.length);
         return newArray;
     }
 
+    // Returns the customer's username
     public String getUsername() {
         return username;
     }
 
-    public String getAddress(){
+    // Returns the customer's address as a string
+    public String getAddress() {
         return address.toString();
     }
 
@@ -138,13 +151,14 @@ public class Customer implements Comparable<Customer> {
                 "history=" + historyString;
     }
 
+    // Sets the current cart to a specific transaction from history
     public void setCartFromHistory(int i) {
         int newLength = history[i].length;
         cart = new Product[newLength];
         System.arraycopy(history[i], 0, cart, 0, newLength);
         cartSize = 0;
         for (int j = 0; j < cart.length; j++) {
-            if(cart[j] == null) {
+            if (cart[j] == null) {
                 break;
             }
             cartSize++;
@@ -152,7 +166,7 @@ public class Customer implements Comparable<Customer> {
     }
 
     @Override
-    public int compareTo(Customer c){
+    public int compareTo(Customer c) {
         return this.username.compareTo(c.username);
     }
 }

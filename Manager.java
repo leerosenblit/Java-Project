@@ -1,5 +1,5 @@
+// Manages sellers, customers, and their interactions in the e-commerce system.
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class Manager{
 
@@ -12,8 +12,8 @@ public class Manager{
     public Manager(){
         this.numOfSellers = 0;
         this.numOfCustomers = 0;
-        sellers = new Seller[2];
-        customers = new Customer[2];
+        sellers = new Seller[2]; // Initial capacity set to 2
+        customers = new Customer[2]; // Initial capacity set to 2
     }
 
     public boolean addSeller(String username, String password){
@@ -21,7 +21,7 @@ public class Manager{
             return false;
         }
         if (numOfSellers >= sellers.length) {
-            sellers = increaseArray(sellers);
+            sellers = increaseArray(sellers);// Increase array capacity if full
         }
         sellers[numOfSellers++] = new Seller(username, password);
         return true;
@@ -32,13 +32,13 @@ public class Manager{
             return false;
         }
         if (numOfCustomers >= customers.length) {
-            customers = increaseArray(customers);
+            customers = increaseArray(customers);// Increase array capacity if full
         }
         customers[numOfCustomers++] = new Customer(username, password, address);
         return true;
     }
 
-    public double customerPay(String customerName){
+    public double customerPay(String customerName){ // Calls the customer's function and return the total sum
         int customerIndex = returnIndexCustomers(customerName);
         if (customerIndex != -1){
             return customers[returnIndexCustomers(customerName)].pay();
@@ -52,12 +52,11 @@ public class Manager{
         }
         else{
             if(packingPrice!=0){
-                sellers[returnIndexSellers(sellerName)].addProduct(productName, price, category,packingPrice);
+                return sellers[returnIndexSellers(sellerName)].addProduct(productName, price, category,packingPrice);
             }
             else{
-                sellers[returnIndexSellers(sellerName)].addProduct(productName, price, category);
+                return sellers[returnIndexSellers(sellerName)].addProduct(productName, price, category);
             }
-            return true;
         }
     }
 
@@ -80,17 +79,17 @@ public class Manager{
         return true;
     }
 
-    public String getSpecificCustomer(String customerName){
+    public String getSpecificCustomerHistory(String customerName){ // Returns the customer's history by name
         int customerIndex = returnIndexCustomers(customerName);
         return customers[customerIndex].getOrderHistory();
     }
 
-    public int getNumOfTransactions(String customerName){
+    public int getNumOfTransactions(String customerName){ // Returns specific customer's num of history transactions
         int customerIndex = returnIndexCustomers(customerName);
         return customers[returnIndexCustomers(customerName)].getNumOfTransactions();
     }
 
-    public boolean checkIfNeedPack(String customerName){
+    public boolean checkIfNeedPack(String customerName){ // Check if a specific product needs packing
         int customerIndex = returnIndexCustomers(customerName);
         if(customers[customerIndex].checkIfNeedPack()){
             return true;
@@ -99,7 +98,7 @@ public class Manager{
     }
 
 
-    public String getAllSellers(){
+    public String getAllSellers(){ // Sellers toString
         StringBuilder sb = new StringBuilder();
         Seller[] newSellers = new Seller[numOfSellers];
         System.arraycopy(sellers, 0, newSellers, 0, numOfSellers);
@@ -116,7 +115,7 @@ public class Manager{
         return null;
     }
 
-    public String getAllCustomers(){
+    public String getAllCustomers(){ // Customers toString
         StringBuilder sb = new StringBuilder();
         Customer[] newCustomers = new Customer[numOfCustomers];
         System.arraycopy(customers, 0, newCustomers, 0, numOfCustomers);
@@ -138,16 +137,16 @@ public class Manager{
         return new Address(street, blockNumber, city, state);
     }
 
-    public String getSellerProducts(String sellerName){
+    public String getSellerProducts(String sellerName){ // Returns the toString of the seller's products
         int sellerIndex = returnIndexSellers(sellerName);
         return sellers[sellerIndex].getProducts();
     }
 
-    public String getCategories(){
+    public String getCategories(){ // Returns the categories
         return Product.categoryToString();
     }
 
-    public int getNumOfProducts(String customer){
+    public int getNumOfProducts(String customer){ // Returns the customer's num of products
         int customerIndex = returnIndexCustomers(customer);
         if (customerIndex != -1){
             return customers[customerIndex].getCartSize();
@@ -208,23 +207,24 @@ public class Manager{
         }
         return -1;
     }
-    public void displayProductsByCategory(int category) {
+    public String displayProductsByCategory(int category) { // Return the toString of a specific category
         boolean found = false;
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < numOfSellers; i++) {
             String products = sellers[i].getProductsByCategory(category);
             if (products != null && !products.isEmpty()) {
                 found = true;
-                System.out.println("seller: " + sellers[i].getUsername());
-                System.out.println(products);
+                sb.append("seller: ").append(sellers[i].getUsername()).append("\n");
+                sb.append(products).append("\n");
             }
         }
         if (!found) {
-            System.out.println("No products found in this category. ");
-
+            return null;
         }
+        return sb.toString();
     }
 
-    public void setCartFromHistory(String customerName, int i) {
+    public void setCartFromHistory(String customerName, int i) { // Sets the cart from history
         int customerIndex = returnIndexCustomers(customerName);
         customers[customerIndex].setCartFromHistory(i);
     }

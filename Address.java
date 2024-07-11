@@ -1,3 +1,4 @@
+// Represents an address with street, block number, city, and state.
 public class Address {
     private String street;
     private String blockNumber;
@@ -18,19 +19,6 @@ public class Address {
         this.blockNumber = other.blockNumber;
         this.city = other.city;
         this.state = other.state;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-    public String getBlockNumber() {
-        return blockNumber;
-    }
-    public String getCity() {
-        return city;
-    }
-    public String getState() {
-        return state;
     }
 
     @Override

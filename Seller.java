@@ -1,6 +1,3 @@
-import java.util.Arrays;
-import java.util.Comparator;
-
 public class Seller implements Comparable<Seller>{
     private String username;
     private String password;
@@ -46,7 +43,7 @@ public class Seller implements Comparable<Seller>{
         return true;
     }
 
-    public String getProductsByCategory(int category){
+    public String getProductsByCategory(int category){ //Returns all the products of the chosen category
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < numOfProducts; i++){
             if(products[i].getCategoryIndex() == (category - 1)){
@@ -77,7 +74,8 @@ public class Seller implements Comparable<Seller>{
         return sb.toString();
     }
 
-    public Product getProductByName(String productName){ // input: name. output: the index of it
+
+    public Product getProductByName(String productName){ // input: name. output: the object
         for(int i=0; i<products.length; i++){
             if(productName.equals(products[i].getName())){
                 return products[i];
@@ -109,6 +107,7 @@ public class Seller implements Comparable<Seller>{
         return false;
     }
 
+    // Method to sort sellers alphabetically based on username
     @Override
     public int compareTo(Seller s){
         return this.username.compareTo(s.username);
@@ -119,8 +118,8 @@ public class Seller implements Comparable<Seller>{
         String productsString = numOfProducts>0 ? getProducts() : "No products at the moment";
         return "username=" + username + '\n' +
                 "products=\n" + productsString +
-                '\n' +
-                "numOfProducts=" + numOfProducts;
+                "numOfProducts=" + numOfProducts +
+                "\n";
     }
 }
 

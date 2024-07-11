@@ -1,3 +1,4 @@
+// Represents a packaged product, extending the Product class and adding a packaging price.
 public class PackagedProduct extends Product{
     private double packPrice;
 

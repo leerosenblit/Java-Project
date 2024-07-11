@@ -91,7 +91,7 @@ public class Project {
         System.out.println("7 - Display All Sellers");
         System.out.println("8 - Display All product from a category");
         System.out.println("9 - Create New cart from History");
-
+        System.out.print("Enter your choice please: ");
     }
 
     private static void case1(Manager m){ // Add seller
@@ -133,16 +133,24 @@ public class Project {
     private static void case3(Manager m) { // Add product to seller
         System.out.print("Enter Seller name: ");
         String seller = sc.nextLine();
+        if(!m.checkIfExistSellers(seller)){
+            System.out.println("Seller does not exist.");
+            return;
+        }
         System.out.print("Enter product name: ");
         String productName = sc.nextLine();
-
         double price = 0;
         boolean validPrice = false;
         while(!validPrice){
             System.out.print("Enter the price: ");
             try {
                 price = Double.parseDouble(sc.nextLine());
-                validPrice = true;
+                if(price>0){
+                    validPrice = true;
+                }
+                else{
+                    System.out.println("Price can't be a negative number. Please try again");
+                }
             }catch (NumberFormatException e){
                 System.out.println("Invalid price. Please try again.");
             }
@@ -158,7 +166,7 @@ public class Project {
                 if(category > 0 && category < 5){
                     validCategory = true;
                 } else {
-                    System.out.println("Invalid category. Please enter a number between 0 and 3.");
+                    System.out.println("Invalid category. Please enter a number between 1 and 4.");
                 }
 
 
@@ -181,7 +189,13 @@ public class Project {
                 System.out.print("Enter the packing price: ");
                 try {
                     packingPrice = Double.parseDouble(sc.nextLine());
-                    validPackingPrice = true;
+                    if(packingPrice>0){
+                        validPackingPrice = true;
+                    }
+                else{
+                    System.out.println("Price can't be a negative number. Please try again");
+                }
+
                 } catch (NumberFormatException e){
                     System.out.println("Invalid input. please enter a valid number for the packing price");
                 }
@@ -192,7 +206,7 @@ public class Project {
             System.out.println("Product added successfully.");
         }
         else {
-            System.out.println("Invalid operation");
+            System.out.println("Product already exists.");
         }
     }
 
@@ -231,11 +245,11 @@ public class Project {
                     System.out.println("Invalid");
                 }
             } else if (m.getNumOfProducts(customer) == 0) {
-                throw new EmptycartException();
+                throw new EmptyCartException();
             } else {
                 System.out.println("No customer with the name " + customer + ".");
             }
-        } catch (EmptycartException e) {
+        } catch (EmptyCartException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -271,9 +285,14 @@ public class Project {
                 int category = Integer.parseInt(sc.nextLine());
                 if (category > 0 && category < 5) {
                     validCategory = true;
-                    m.displayProductsByCategory(category);
+                    if(m.displayProductsByCategory(category) != null){
+                        System.out.println(m.displayProductsByCategory(category));
+                    }
+                    else{
+                        System.out.println("No products found in this category. ");
+                    }
                 } else {
-                    System.out.println("Invalid category. Please enter a number between 0 and 3.");
+                    System.out.println("Invalid category. Please enter a number between 1 and 4.");
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input. Please enter a valid number.");
@@ -299,14 +318,20 @@ public class Project {
                     answer = sc.nextLine().toLowerCase();
                 }
             }
-            System.out.println(m.getSpecificCustomer(customerName));
+            System.out.println(m.getSpecificCustomerHistory(customerName));
             boolean validCategory = false;
             while (!validCategory) {
                 System.out.println("Please choose the desired cart:");
                 try {
                     int choice = sc.nextInt();
-                    m.setCartFromHistory(customerName, choice - 1);
-                    validCategory = true;
+                    if(choice >0 && choice < m.getNumOfProducts(customerName)) {
+                        m.setCartFromHistory(customerName, choice - 1);
+                        validCategory = true;
+                    }
+                    else{
+                        System.out.println("Wrong choice.");
+                        return;
+                    }
                 } catch (Exception e) {
                     System.out.println("Invalid input. Please enter a valid number.");
                 }
