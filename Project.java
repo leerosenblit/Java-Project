@@ -216,7 +216,7 @@ public class Project {
         System.out.print("Enter seller name: ");
         String seller = sc.nextLine();
         if (m.IsCustomerExists(customer, seller)) {
-            System.out.println("Choose your desired product(enter the name of the product): ");
+            System.out.println("Choose your desired product(Enter the name of the product): ");
             String productList = m.getSellerProducts(seller);
             System.out.println(productList);
             String product = sc.nextLine();
@@ -321,7 +321,7 @@ public class Project {
             System.out.println(m.getSpecificCustomerHistory(customerName));
             boolean validCategory = false;
             while (!validCategory) {
-                System.out.println("Please choose the desired cart:");
+                System.out.println("Please choose the desired cart:(Enter the index number)");
                 try {
                     int choice = sc.nextInt();
                     if(choice >0 && choice <= m.getNumOfTransactions(customerName)) {

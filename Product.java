@@ -52,7 +52,7 @@ public class Product {
     // Private method to retrieve category enum based on index.
     private eCategory getCategoryByIndex(int category){
         eCategory[] categories = eCategory.values();
-        return categories[category - 1];
+        return categories[category];
     }
 
     // Static method to convert category enums to string.
