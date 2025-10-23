@@ -55,13 +55,6 @@ A UML diagram illustrating class relationships is available in the file:
 
 ---
 
-## 👨‍💻 Authors
-
-- **Lee Rosenblit**
-- **Tomer Feldon**
-
----
-
 ## 📄 License
 
 This project is for **educational purposes** only and may be freely used or modified for learning.
